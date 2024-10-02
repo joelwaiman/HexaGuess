@@ -20,19 +20,20 @@ export default function Home() {
       return;
     }
 
+    if (inputColor.length !== 6) {
+      setMessage('only 6 characters');
+      return;
+    }
+
     setColor(inputColor);
     setAttempts(prev => [...prev, inputColor])
 
-    if (inputColor.toLowerCase() === randomColor.substring(1).toLowerCase()) {
+    if (inputColor.toUpperCase() === randomColor.substring(1).toUpperCase()) {
       setMessage('¡Felicidades! Has acertado el color.');
       setScore(prev => prev + 10);
     } else {
       setMessage(`wrong attemp. ${4 - attempts.length - 1} chance left`);
       setInputColor('')
-    }
-    if (inputColor.length !== 6) {
-      setMessage('only 6 characters');
-      return;
     }
   }
 
@@ -48,7 +49,7 @@ export default function Home() {
   function verifyLetterPosition(input: string, target: string): JSX.Element[] {
     const targetChars = target.slice(1).toUpperCase().split('');
     const inputChars = input.toUpperCase().split('');
-    const result: any = [];
+    const result: JSX.Element[] = [];
     const usedTargetIndices: Set<number> = new Set();
 
     for (let i = 0; i < inputChars.length; i++) {
@@ -63,12 +64,14 @@ export default function Home() {
         );
         usedTargetIndices.add(i);
       } else {
-        result.push(null);
+        result.push(
+          <span key={i} className="hidden"></span>
+        );
       }
     }
 
     for (let i = 0; i < inputChars.length; i++) {
-      if (result[i] === null) {
+      if (result[i].props.className === "hidden") {
         let found = false;
         for (let j = 0; j < targetChars.length; j++) {
           if (!usedTargetIndices.has(j) && inputChars[i] === targetChars[j]) {
@@ -103,7 +106,6 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 sm:p-8 md:p-12 font-sans bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-
       <main className="flex flex-col w-full max-w-2xl gap-6 items-center bg-gray-800 p-6 rounded-2xl shadow-xl">
         <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-center">Try to match the color</h1>
         <section className="flex flex-col sm:flex-row w-full gap-4 justify-center">
@@ -137,8 +139,8 @@ export default function Home() {
             }}>
             New color
           </button>
-          <button className="bg-red-600 p-3 rounded-xl text-white text-lg hover:bg-red-700 transition-colors"
-            onClick={resetGame}>
+          <button className="bg-red-600 p-3 rounded-xl text-white text-lg hover:bg-red-700 transition-colors" 
+          onClick={resetGame}>
             Reset
           </button>
         </div>
@@ -154,7 +156,6 @@ export default function Home() {
         </div>
 
         <p className="text-2xl font-semibold bg-gray-700 rounded-full px-6 py-2">Score: {score}</p>
-
       </main>
     </div>
   );
