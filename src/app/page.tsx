@@ -46,13 +46,18 @@ export default function Home() {
   }
 
   function verifyLetterPosition(input: string, target: string): JSX.Element[] {
+    const newTarget = target.slice(1).split('');
+
+    const targetCopy = [...newTarget];
     return input.split('').map((char, index) => {
       let bgColor = '';
 
-      if (target.includes(char) && char === target[index]) {
+      if (char === targetCopy[index]) {
         bgColor = 'bg-green-500';
-      } else if (target.includes(char) && char !== target[index]) {
+        targetCopy[index] = ''
+      } else if (targetCopy[index].includes(char[index])) {
         bgColor = 'bg-yellow-500';
+        targetCopy[index] = ''
       } else {
         bgColor = 'bg-gray-500';
       }
@@ -70,6 +75,7 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+
       <main className="flex flex-col w-full md:w-[900px] gap-10 items-center text-4xl bg-zinc-900 p-10 rounded-2xl">
         <h1 className="font-bold text-center">Try to match the color</h1>
         <section className="flex w-full gap-4">
@@ -98,7 +104,8 @@ export default function Home() {
           <button className="bg-black p-4 rounded-2xl text-white"
             onClick={() => {
               setRandomColor(generateRandomColor());
-              setAttempts([])
+              setAttempts([]);
+              setInputColor('')
             }}>
             New color
           </button>
