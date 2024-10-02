@@ -15,13 +15,13 @@ export default function Home() {
   }
 
   function handleTry(): void {
-    if (attempts.length === 4) {
-      setMessage('Has alcanzado el límite de intentos.');
+    if (attempts.length === 5) {
+      setMessage('Has alcanzado el límite de intentos. El color correcto era ' + randomColor);
       return;
     }
 
     if (inputColor.length !== 6) {
-      setMessage('only 6 characters');
+      setMessage('Solo 6 caracteres');
       return;
     }
 
@@ -32,8 +32,15 @@ export default function Home() {
       setMessage('¡Felicidades! Has acertado el color.');
       setScore(prev => prev + 10);
     } else {
-      setMessage(`wrong attemp. ${4 - attempts.length - 1} chance left`);
-      setInputColor('')
+      const remainingAttempts = 5 - attempts.length - 1;
+      if (remainingAttempts > 1) {
+        setMessage(`Intento fallido. Te quedan ${remainingAttempts} intentos`);
+      } else if (remainingAttempts === 1) {
+        setMessage('Cuidado, te queda el último intento');
+      } else {
+        setMessage('Se acabaron los intentos. El color correcto era ' + randomColor);
+      }
+      setInputColor('');
     }
   }
 
@@ -107,7 +114,7 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen p-4 sm:p-8 md:p-12 font-sans bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <main className="flex flex-col w-full max-w-2xl gap-6 items-center bg-gray-800 p-6 rounded-2xl shadow-xl">
-        <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-center">Try to match the color</h1>
+        <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-center">Intenta adivinar el color</h1>
         <section className="flex flex-col sm:flex-row w-full gap-4 justify-center">
           <div className="w-full sm:w-2/5 h-32 sm:h-48 rounded-xl shadow-lg" style={{ backgroundColor: randomColor }} />
           <div className="w-full sm:w-2/5 h-32 sm:h-48 rounded-xl shadow-lg" style={{ backgroundColor: `#${color}` }} />
@@ -124,9 +131,9 @@ export default function Home() {
           <button
             className="bg-blue-600 p-3 rounded-xl text-white text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
             onClick={handleTry}
-            disabled={inputColor.length !== 6}
+            disabled={inputColor.length !== 6 || attempts.length >= 5}
           >
-            Try
+            Intentar
           </button>
         </div>
         <p className="text-center text-lg">{message}</p>
@@ -137,11 +144,11 @@ export default function Home() {
               setAttempts([]);
               setInputColor('')
             }}>
-            New color
+            Nuevo color
           </button>
-          <button className="bg-red-600 p-3 rounded-xl text-white text-lg hover:bg-red-700 transition-colors" 
-          onClick={resetGame}>
-            Reset
+          <button className="bg-red-600 p-3 rounded-xl text-white text-lg hover:bg-red-700 transition-colors"
+            onClick={resetGame}>
+            Reiniciar
           </button>
         </div>
         <div className="flex flex-col items-center w-full">
@@ -155,7 +162,7 @@ export default function Home() {
           </ol>
         </div>
 
-        <p className="text-2xl font-semibold bg-gray-700 rounded-full px-6 py-2">Score: {score}</p>
+        <p className="text-2xl font-semibold bg-gray-700 rounded-full px-6 py-2">Puntaje: {score}</p>
       </main>
     </div>
   );
