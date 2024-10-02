@@ -31,6 +31,7 @@ export default function Home() {
     if (inputColor.toUpperCase() === randomColor.substring(1).toUpperCase()) {
       setMessage('¡Felicidades! Has acertado el color.');
       setScore(prev => prev + 10);
+
     } else {
       const remainingAttempts = 5 - attempts.length - 1;
       if (remainingAttempts > 1) {
@@ -131,7 +132,7 @@ export default function Home() {
           <button
             className="bg-blue-600 p-3 rounded-xl text-white text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
             onClick={handleTry}
-            disabled={inputColor.length !== 6 || attempts.length >= 5}
+            disabled={inputColor.length !== 6 || attempts.length >= 5 || inputColor.toUpperCase() === randomColor.substring(1).toUpperCase()}
           >
             Intentar
           </button>
