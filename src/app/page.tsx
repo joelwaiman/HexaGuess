@@ -48,7 +48,7 @@ export default function Home() {
   function verifyLetterPosition(input: string, target: string): JSX.Element[] {
     const targetChars = target.slice(1).toUpperCase().split('');
     const inputChars = input.toUpperCase().split('');
-    const result: JSX.Element[] = [];
+    const result: any = [];
     const usedTargetIndices: Set<number> = new Set();
 
     for (let i = 0; i < inputChars.length; i++) {
