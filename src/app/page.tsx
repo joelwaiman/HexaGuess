@@ -27,7 +27,7 @@ export default function Home() {
       setMessage('¡Felicidades! Has acertado el color.');
       setScore(prev => prev + 10);
     } else {
-      setMessage(`wrong attemp. ${4 - attempts.length} chance left`);
+      setMessage(`wrong attemp. ${4 - attempts.length - 1} chance left`);
       setInputColor('')
     }
     if (inputColor.length !== 6) {
@@ -46,12 +46,11 @@ export default function Home() {
   }
 
   function verifyLetterPosition(input: string, target: string): JSX.Element[] {
-    const targetChars = target.slice(1).split('');
-    const inputChars = input.split('');
+    const targetChars = target.slice(1).toUpperCase().split('');
+    const inputChars = input.toUpperCase().split('');
     const result: JSX.Element[] = [];
     const usedTargetIndices: Set<number> = new Set();
-  
-    // First pass: Mark correct positions
+
     for (let i = 0; i < inputChars.length; i++) {
       if (inputChars[i] === targetChars[i]) {
         result.push(
@@ -59,7 +58,7 @@ export default function Home() {
             key={i}
             className="bg-green-500 text-white font-bold py-1 px-2 rounded"
           >
-            {inputChars[i].toUpperCase()}
+            {inputChars[i]}
           </span>
         );
         usedTargetIndices.add(i);
@@ -67,8 +66,7 @@ export default function Home() {
         result.push(null);
       }
     }
-  
-    // Second pass: Mark yellow and gray
+
     for (let i = 0; i < inputChars.length; i++) {
       if (result[i] === null) {
         let found = false;
@@ -79,7 +77,7 @@ export default function Home() {
                 key={i}
                 className="bg-yellow-500 text-white font-bold py-1 px-2 rounded"
               >
-                {inputChars[i].toUpperCase()}
+                {inputChars[i]}
               </span>
             );
             usedTargetIndices.add(j);
@@ -93,45 +91,45 @@ export default function Home() {
               key={i}
               className="bg-gray-500 text-white font-bold py-1 px-2 rounded"
             >
-              {inputChars[i].toUpperCase()}
+              {inputChars[i]}
             </span>
           );
         }
       }
     }
-  
+
     return result;
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex items-center justify-center min-h-screen p-4 sm:p-8 md:p-12 font-sans bg-gradient-to-br from-gray-900 to-gray-800 text-white">
 
-      <main className="flex flex-col w-full md:w-[900px] gap-10 items-center text-4xl bg-zinc-900 p-10 rounded-2xl">
-        <h1 className="font-bold text-center">Try to match the color</h1>
-        <section className="flex w-full gap-4">
-          <div className="w-2/3 h-80 rounded-2xl" style={{ backgroundColor: randomColor }} />
-          <div className="w-2/3 h-80 rounded-2xl" style={{ backgroundColor: `#${color}` }} />
+      <main className="flex flex-col w-full max-w-2xl gap-6 items-center bg-gray-800 p-6 rounded-2xl shadow-xl">
+        <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-center">Try to match the color</h1>
+        <section className="flex flex-col sm:flex-row w-full gap-4 justify-center">
+          <div className="w-full sm:w-2/5 h-32 sm:h-48 rounded-xl shadow-lg" style={{ backgroundColor: randomColor }} />
+          <div className="w-full sm:w-2/5 h-32 sm:h-48 rounded-xl shadow-lg" style={{ backgroundColor: `#${color}` }} />
         </section>
 
-        <div className="flex flex-col md:flex-row w-full justify-center gap-2">
+        <div className="flex flex-col sm:flex-row w-full justify-center gap-4">
           <input
-            className='p-4 rounded-2xl text-black '
+            className="p-3 w-full rounded-xl text-black text-lg"
             value={inputColor}
             onChange={(e) => setInputColor(e.target.value.replace('#', ''))}
             type="text"
             placeholder="ff7f50"
           />
           <button
-            className="bg-white p-4 rounded-2xl text-black disabled:cursor-no-drop disabled:opacity-60"
+            className="bg-blue-600 p-3 rounded-xl text-white text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
             onClick={handleTry}
             disabled={inputColor.length !== 6}
           >
             Try
           </button>
         </div>
-        <p className="text-center">{message}</p>
-        <div className="flex w-full justify-between">
-          <button className="bg-black p-4 rounded-2xl text-white"
+        <p className="text-center text-lg">{message}</p>
+        <div className="flex flex-col sm:flex-row w-full justify-between gap-4">
+          <button className="bg-gray-700 p-3 rounded-xl text-white text-lg hover:bg-gray-600 transition-colors"
             onClick={() => {
               setRandomColor(generateRandomColor());
               setAttempts([]);
@@ -139,22 +137,23 @@ export default function Home() {
             }}>
             New color
           </button>
-          <button className="bg-white p-4 rounded-2xl text-black" onClick={resetGame}>
+          <button className="bg-red-600 p-3 rounded-xl text-white text-lg hover:bg-red-700 transition-colors"
+            onClick={resetGame}>
             Reset
           </button>
         </div>
-        <div className="flex flex-col items-center">
-          <p>Attemps</p>
-          <ol>
+        <div className="flex flex-col items-center w-full">
+          <p className="text-xl font-semibold mb-2">Attemps</p>
+          <ol className="w-full space-y-2">
             {attempts.map((attempt, index) => (
-              <li key={index} className="flex gap-1 justify-center p-4 text-black rounded-lg">
+              <li key={index} className="flex gap-1 justify-center p-2 bg-gray-700 rounded-lg">
                 {verifyLetterPosition(attempt, randomColor)}
               </li>
             ))}
           </ol>
         </div>
 
-        <p className="text-2xl font-semibold bg-slate-700 rounded-3xl p-4">Score: {score}</p>
+        <p className="text-2xl font-semibold bg-gray-700 rounded-full px-6 py-2">Score: {score}</p>
 
       </main>
     </div>
