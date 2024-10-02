@@ -44,6 +44,7 @@ export default function Home() {
         setMessage('Cuidado, te queda el último intento');
       } else {
         setMessage('Se acabaron los intentos. El color correcto era ' + randomColor);
+        setScore(0)
       }
       setInputColor('');
     }
