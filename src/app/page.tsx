@@ -46,31 +46,61 @@ export default function Home() {
   }
 
   function verifyLetterPosition(input: string, target: string): JSX.Element[] {
-    const newTarget = target.slice(1).split('');
-
-    const targetCopy = [...newTarget];
-    return input.split('').map((char, index) => {
-      let bgColor = '';
-
-      if (char === targetCopy[index]) {
-        bgColor = 'bg-green-500';
-        targetCopy[index] = ''
-      } else if (targetCopy[index].includes(char[index])) {
-        bgColor = 'bg-yellow-500';
-        targetCopy[index] = ''
+    const targetChars = target.slice(1).split('');
+    const inputChars = input.split('');
+    const result: JSX.Element[] = [];
+    const usedTargetIndices: Set<number> = new Set();
+  
+    // First pass: Mark correct positions
+    for (let i = 0; i < inputChars.length; i++) {
+      if (inputChars[i] === targetChars[i]) {
+        result.push(
+          <span
+            key={i}
+            className="bg-green-500 text-white font-bold py-1 px-2 rounded"
+          >
+            {inputChars[i].toUpperCase()}
+          </span>
+        );
+        usedTargetIndices.add(i);
       } else {
-        bgColor = 'bg-gray-500';
+        result.push(null);
       }
-
-      return (
-        <span
-          key={index}
-          className={`${bgColor} text-white font-bold py-1 px-2 rounded`}
-        >
-          {char.toUpperCase()}
-        </span>
-      );
-    });
+    }
+  
+    // Second pass: Mark yellow and gray
+    for (let i = 0; i < inputChars.length; i++) {
+      if (result[i] === null) {
+        let found = false;
+        for (let j = 0; j < targetChars.length; j++) {
+          if (!usedTargetIndices.has(j) && inputChars[i] === targetChars[j]) {
+            result[i] = (
+              <span
+                key={i}
+                className="bg-yellow-500 text-white font-bold py-1 px-2 rounded"
+              >
+                {inputChars[i].toUpperCase()}
+              </span>
+            );
+            usedTargetIndices.add(j);
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          result[i] = (
+            <span
+              key={i}
+              className="bg-gray-500 text-white font-bold py-1 px-2 rounded"
+            >
+              {inputChars[i].toUpperCase()}
+            </span>
+          );
+        }
+      }
+    }
+  
+    return result;
   }
 
   return (
