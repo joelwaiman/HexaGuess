@@ -1,14 +1,18 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [randomColor, setRandomColor] = useState<string>(generateRandomColor());
+  const [randomColor, setRandomColor] = useState<string>('');
   const [color, setColor] = useState<string>('');
   const [inputColor, setInputColor] = useState<string>('');
   const [attempts, setAttempts] = useState<string[]>([]);
   const [message, setMessage] = useState<string>('');
   const [score, setScore] = useState<number>(0);
+
+  useEffect(() => {
+    setRandomColor(generateRandomColor());
+  }, []);
 
   function generateRandomColor(): string {
     return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
@@ -132,7 +136,7 @@ export default function Home() {
           <button
             className="bg-blue-600 p-3 rounded-xl text-white text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
             onClick={handleTry}
-            disabled={inputColor.length !== 6 || attempts.length >= 5 || inputColor.toUpperCase() === randomColor.substring(1).toUpperCase()}
+            disabled={inputColor.length !== 6 || attempts.length >= 5 || message === '¡Felicidades! Has acertado el color.'}
           >
             Intentar
           </button>
@@ -144,6 +148,7 @@ export default function Home() {
               setRandomColor(generateRandomColor());
               setAttempts([]);
               setInputColor('')
+              setMessage('')
             }}>
             Nuevo color
           </button>
